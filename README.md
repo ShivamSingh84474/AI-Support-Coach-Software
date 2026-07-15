@@ -11,7 +11,7 @@ This repository now includes a lightweight **Proof of Concept (POC)** for an AI 
 
 ## Demo Included
 
-Open `/home/runner/work/AI-Support-Coach-Software/AI-Support-Coach-Software/index.html` in a browser.
+Open `index.html` in a browser.
 
 No build step or dependency install is required.
 

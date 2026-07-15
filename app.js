@@ -104,46 +104,80 @@ const chooseFormats = (knowledge, preference) => {
   return knowledge.recommendedFormats.slice(0, 2);
 };
 
-const buildCard = (format, content) => `
-  <article class="card">
-    <h3>${format.toUpperCase()}</h3>
-    <p>${content}</p>
-  </article>
-`;
+const clearResult = () => {
+  while (resultBox.firstChild) {
+    resultBox.removeChild(resultBox.firstChild);
+  }
+};
 
 const renderResult = (payload) => {
   resultBox.classList.remove("hidden");
+  clearResult();
 
   if (!payload) {
-    resultBox.innerHTML = `
-      <p><strong>No confident match found.</strong> Try using keywords like password, invoice, timeout, or auth flow.</p>
-    `;
+    const message = document.createElement("p");
+    const strong = document.createElement("strong");
+    strong.textContent = "No confident match found.";
+    message.appendChild(strong);
+    message.append(" Try using keywords like password, invoice, timeout, or auth flow.");
+    resultBox.appendChild(message);
     return;
   }
 
   const formats = chooseFormats(payload, preferenceSelect.value);
-  const cards = formats.map((format) => buildCard(format, payload.responses[format])).join("");
   const confidenceLabel = `${Math.round(payload.confidence * 100)}%`;
 
-  resultBox.innerHTML = `
-    <div class="meta">
-      <strong>Decision:</strong> ${payload.reason}<br />
-      <strong>Confidence:</strong> ${confidenceLabel}<br />
-      <strong>Active mode:</strong> ${modeSelect.value}
-    </div>
-    <div class="cards">${cards}</div>
-    <div class="sources">
-      <strong>Knowledge sources used:</strong><br />
-      ${payload.sources.map((source) => `<span class="tag">${source}</span>`).join("")}
-    </div>
-  `;
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  meta.textContent = `Decision: ${payload.reason} | Confidence: ${confidenceLabel} | Active mode: ${modeSelect.value}`;
+  resultBox.appendChild(meta);
+
+  const cards = document.createElement("div");
+  cards.className = "cards";
+
+  formats.forEach((format) => {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const title = document.createElement("h3");
+    title.textContent = format.toUpperCase();
+    card.appendChild(title);
+
+    const content = document.createElement("p");
+    content.textContent = payload.responses[format];
+    card.appendChild(content);
+
+    cards.appendChild(card);
+  });
+
+  resultBox.appendChild(cards);
+
+  const sources = document.createElement("div");
+  sources.className = "sources";
+
+  const sourcesTitle = document.createElement("strong");
+  sourcesTitle.textContent = "Knowledge sources used:";
+  sources.appendChild(sourcesTitle);
+  sources.appendChild(document.createElement("br"));
+
+  payload.sources.forEach((source) => {
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = source;
+    sources.appendChild(tag);
+  });
+
+  resultBox.appendChild(sources);
 };
 
 askBtn.addEventListener("click", () => {
   const query = queryInput.value.trim();
   if (!query) {
     resultBox.classList.remove("hidden");
-    resultBox.innerHTML = "<p>Please enter a query.</p>";
+    clearResult();
+    const promptMessage = document.createElement("p");
+    promptMessage.textContent = "Please enter a query.";
+    resultBox.appendChild(promptMessage);
     return;
   }
 
@@ -155,9 +189,13 @@ askBtn.addEventListener("click", () => {
     const maybeTechnical = technicalHint.some((key) => query.toLowerCase().includes(key));
     if (maybeTechnical) {
       resultBox.classList.remove("hidden");
-      resultBox.innerHTML = `
-        <p><strong>Support Mode restriction:</strong> This query appears technical. Switch to Developer Mode for backend/code-flow details.</p>
-      `;
+      clearResult();
+      const restrictionMessage = document.createElement("p");
+      const strong = document.createElement("strong");
+      strong.textContent = "Support Mode restriction:";
+      restrictionMessage.appendChild(strong);
+      restrictionMessage.append(" This query appears technical. Switch to Developer Mode for backend/code-flow details.");
+      resultBox.appendChild(restrictionMessage);
       return;
     }
   }
@@ -166,6 +204,7 @@ askBtn.addEventListener("click", () => {
 });
 
 exampleBtn.addEventListener("click", () => {
-  queryInput.value = sampleQueries[sampleIndex % sampleQueries.length];
+  queryInput.value = sampleQueries[sampleIndex];
   sampleIndex += 1;
+  if (sampleIndex >= sampleQueries.length) sampleIndex = 0;
 });
