@@ -105,9 +105,7 @@ const chooseFormats = (knowledge, preference) => {
 };
 
 const clearResult = () => {
-  while (resultBox.firstChild) {
-    resultBox.removeChild(resultBox.firstChild);
-  }
+  resultBox.replaceChildren();
 };
 
 const renderResult = (payload) => {
