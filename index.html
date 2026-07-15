@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Support Coach - POC</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header>
+        <h1>AI Support Coach (POC)</h1>
+        <p class="subtitle">
+          Multimodal support assistant with Support Mode and Developer Mode.
+        </p>
+      </header>
+
+      <section class="controls">
+        <label>
+          Mode
+          <select id="mode">
+            <option value="support">Support Mode</option>
+            <option value="developer">Developer Mode</option>
+          </select>
+        </label>
+
+        <label>
+          Preferred response format
+          <select id="preference">
+            <option value="auto">Auto</option>
+            <option value="text">Text</option>
+            <option value="image">Image</option>
+            <option value="audio">Audio</option>
+            <option value="video">Video</option>
+            <option value="mixed">Mixed</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="query-box">
+        <label for="query">Query</label>
+        <textarea
+          id="query"
+          placeholder="Ask product or technical questions..."
+        ></textarea>
+        <div class="actions">
+          <button id="askBtn">Generate Response</button>
+          <button id="exampleBtn" class="secondary">Load Example</button>
+        </div>
+      </section>
+
+      <section id="result" class="result hidden"></section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+  </html>
