@@ -1,6 +1,4 @@
-# AI Support Coach Software (POC / PUC)
-
-> POC = Proof of Concept, PUC = Practical Use-Case demo.
+# AI Support Coach Software (POC)
 
 This repository now includes a lightweight **Proof of Concept (POC)** for an AI support system that:
 
